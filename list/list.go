@@ -1,69 +1,66 @@
 package list
 
-type listNode struct {
-	prev, next *listNode
-	val        int
+// ListNode ....
+type ListNode struct {
+	Prex, Next *ListNode
+	Val        int
 }
 
 // 两数相加,非递归版
-func addTwoNumbers(list1 *listNode, list2 *listNode) *listNode {
-	var a listNode
-
-	b := new(listNode)
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	dummyHead := new(ListNode)
+	p, q, curr := l1, l2, dummyHead
 	carry := 0
-	i := 0
-
-	for {
-		b.val = (list1.val + list2.val + carry) % 10
-		carry = (list1.val + list2.val + carry) / 10
-
-		if list1.next == nil && list2.next == nil && carry == 0 {
-			a.val = b.val
-			a.next = nil
-			break
-		}
-
-		if list1 != nil {
-			list1 = list1.next
+	var x, y int
+	for p != nil || q != nil {
+		if p != nil {
+			x = p.Val
 		} else {
-			list1.val = 0
-			list1.next = nil
+			x = 0
 		}
-
-		if list2 != nil {
-			list2 = list2.next
+		if q != nil {
+			y = q.Val
 		} else {
-			list2.val = 0
-			list2.next = nil
+			y = 0
 		}
-
-		b.next = new(listNode)
-
-		if i == 0 {
-			a.next = b.next
+		sum := x + y + carry
+		carry = sum / 10
+		curr.Next = &ListNode{Val: sum % 10}
+		curr = curr.Next
+		if p != nil {
+			p = p.Next
 		}
-
-		b = b.next
-		i++
-
+		if q != nil {
+			q = q.Next
+		}
 	}
-	return &a
+	if carry > 0 {
+		curr.Next = &ListNode{Val: carry}
+	}
+	return dummyHead.Next
 }
 
 // 递归两数相加
-func addTwoNumbers2(list1, list2 *listNode, carry int) *listNode {
-	if list1 == nil && list2 == nil {
+func addTwoNumbers2(l1, l2 *ListNode, carry int) *ListNode {
+	if l1 == nil && l2 == nil {
 		return nil
 	}
-	if list1 == nil {
-		return list2
+	x, y := 0, 0
+	if l1 != nil {
+		x = l1.Val
+	} else {
+		l1 = &ListNode{Val: 0, Next: nil}
 	}
-	if list2 == nil {
-		return list1
+	if l2 != nil {
+		y = l2.Val
+	} else {
+		l2 = &ListNode{Val: 0, Next: nil}
 	}
-	b := new(listNode)
-	b.val = (list1.val + list2.val + carry) % 10
-	carry = (list1.val + list2.val + carry) / 10
-	b.next = addTwoNumbers2(list1.next, list2.next, carry)
-	return b
+	sum := x + y
+	nextNode := addTwoNumbers(l1.Next, l2.Next)
+	if sum < 10 {
+		return &ListNode{Val: sum, Next: nextNode}
+	}
+	tmpNode := &ListNode{Val: 1, Next: nil}
+	return &ListNode{Val: sum - 10, Next: addTwoNumbers(nextNode, tmpNode)}
 }
