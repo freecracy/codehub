@@ -64,3 +64,27 @@ func addTwoNumbers2(l1, l2 *ListNode, carry int) *ListNode {
 	tmpNode := &ListNode{Val: 1, Next: nil}
 	return &ListNode{Val: sum - 10, Next: addTwoNumbers(nextNode, tmpNode)}
 }
+
+// 反转链表,非递归
+func reverseList(head *ListNode) *ListNode {
+	var prev *ListNode
+	curr := head
+	for curr != nil {
+		nextTemp := curr.Next
+		curr.Next = prev
+		prev = curr
+		curr = nextTemp
+	}
+	return prev
+}
+
+// 反转链表,递归
+func reverseList2(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	p := reverseList(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+	return p
+}
