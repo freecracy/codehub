@@ -1,5 +1,11 @@
 package string
 
+import (
+	"errors"
+	"math"
+	"net"
+)
+
 // 最长子串
 func lengthOfLongestSubstring(s string) int {
 	n, ans := len(s), 0
@@ -66,4 +72,26 @@ func longestValidParentheses(s string) int {
 		}
 	}
 	return maxans
+}
+
+// ip转整数
+func ip2long(ip string) (uint, error) {
+	ip4 := net.ParseIP(ip).To4()
+	if ip4 == nil {
+		return 0, errors.New("error")
+	}
+	return uint(ip4[3]) | uint(ip4[2])<<8 | uint(ip4[1])<<16 | uint(ip4[0])<<24, nil
+}
+
+// 整数转ip
+func long2ip(i uint) (string, error) {
+	if i > math.MaxUint32 {
+		return "", errors.New("error")
+	}
+	ip := make(net.IP, net.IPv4len)
+	ip[0] = byte(i >> 24)
+	ip[1] = byte(i >> 16)
+	ip[2] = byte(i >> 8)
+	ip[3] = byte(i)
+	return ip.String(), nil
 }
