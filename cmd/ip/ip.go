@@ -2,21 +2,40 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net"
-	"os"
+
+	"github.com/apex/log"
+	"github.com/apex/log/handlers/cli"
+)
+
+const VersionDefaultUsage string = "output Version"
+
+var (
+	Version string
+	v       bool
 )
 
 var (
-	ip4 = flag.Bool("4", false, "ip 4 地址")
+	ip4 *bool = flag.Bool("4", false, "ip 4 地址")
 )
 
 func main() {
-	if *ip4 != true {
-		fmt.Println("error")
-		os.Exit(0)
+
+	flag.BoolVar(&v, "v", false, VersionDefaultUsage)
+	flag.BoolVar(&v, "version", false, VersionDefaultUsage)
+
+	flag.Parse()
+	log.SetHandler(cli.Default)
+
+	if v {
+		log.Info(Version)
+		return
 	}
-	getip4()
+
+	if *ip4 {
+		getip4()
+	}
+
 }
 
 func getip4() {
@@ -31,11 +50,7 @@ func getip4() {
 			continue
 		}
 		if ip.IP.To4() != nil {
-			fmt.Println(ip.IP.String())
+			log.Info(ip.IP.String())
 		}
 	}
-}
-
-func init() {
-	flag.Parse()
 }
