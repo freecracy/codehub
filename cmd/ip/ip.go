@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"net"
+	"strings"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
@@ -33,7 +34,7 @@ func main() {
 	}
 
 	if *ip4 {
-		getip4()
+		getip42()
 	}
 
 }
@@ -53,4 +54,14 @@ func getip4() {
 			log.Info(ip.IP.String())
 		}
 	}
+}
+
+func getip42() {
+	conn, err := net.Dial("udp", "github.com:80")
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+	ip := strings.Split(conn.LocalAddr().String(), ":")[0]
+	log.Info(ip)
 }
